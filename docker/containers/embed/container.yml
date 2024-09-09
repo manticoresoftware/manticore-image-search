@@ -1,0 +1,10 @@
+image: embed
+labels:
+  - role=embed
+working_dir: /src
+cap_drop:
+  - ALL
+cap_add:
+  - CHOWN
+volumes:
+  - huggingface-storage:/root/.cache:rw

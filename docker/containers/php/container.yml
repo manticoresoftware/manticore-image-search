@@ -1,0 +1,13 @@
+image: php
+labels:
+  - role=php
+working_dir: /src
+cap_drop:
+  - ALL
+cap_add:
+  - CHOWN
+volumes:
+  - env-storage:/src/env:rw
+  - tmp-storage:/src/tmp:rw
+environment:
+  - APP_ENV=$ENV

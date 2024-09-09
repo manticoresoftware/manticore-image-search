@@ -1,0 +1,18 @@
+FROM muvon/php:8.3.10-fpm
+LABEL maintainer="Manticore Software Ltd. <contact@manticoresearch.com>"
+
+RUN php-ext add msgpack yaml sodium && \
+	apk add --update curl bash openssl imagemagick && \
+  rm -fr /var/cache/apk/* && \
+  rm -fr /tmp/*
+
+COPY . /src
+RUN ln -fs /src/docker/containers/php/config/php.ini /etc/php/php.ini && \
+  ln -fs /src/docker/containers/php/config/conf.d /etc/php/conf.d && \
+	cd /src/app && \
+	if [ -f composer.lock ]; then \
+		composer install --no-dev --optimize-autoloader; \
+	fi
+WORKDIR /src
+
+ENTRYPOINT ["/src/docker/containers/php/entrypoint"]

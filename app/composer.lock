@@ -1,0 +1,376 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "d16717b58763b3f12f7b48f579a4f0f8",
+    "packages": [
+        {
+            "name": "manticoresoftware/manticoresearch-php",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/manticoresoftware/manticoresearch-php.git",
+                "reference": "bc22ea5b2f18e755dd751da9a24d0c5440569f8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/manticoresoftware/manticoresearch-php/zipball/bc22ea5b2f18e755dd751da9a24d0c5440569f8d",
+                "reference": "bc22ea5b2f18e755dd751da9a24d0c5440569f8d",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.4|^8.0",
+                "php-http/discovery": "^1.14",
+                "psr/log": "^1.1 || ^2.0 || ^3.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "*",
+                "phpstan/phpstan": "^1.4",
+                "phpunit/phpunit": ">=7.5 || ^9.6",
+                "slevomat/coding-standard": "^7.0",
+                "squizlabs/php_codesniffer": "^3.7"
+            },
+            "suggest": {
+                "ext-curl": "*",
+                "guzzlehttp/psr7": ">=1.6",
+                "monolog/monolog": "*",
+                "php-http/curl-client": ">=1.7",
+                "php-http/httplug": "^1.1",
+                "php-http/message": "^1.7"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Manticoresearch\\": "src/Manticoresearch/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Manticore Software",
+                    "email": "contact@manticoresearch.com",
+                    "homepage": "https://manticoresearch.com/"
+                },
+                {
+                    "name": "Adrian Nuta",
+                    "email": "adriannuta@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP Client for Manticore Search",
+            "keywords": [
+                "client",
+                "manticoresearch",
+                "search"
+            ],
+            "support": {
+                "chat": "https://slack.manticoresearch.com/",
+                "issues": "https://github.com/manticoresoftware/manticoresearch-php/issues",
+                "source": "https://github.com/manticoresoftware/manticoresearch-php/"
+            },
+            "time": "2024-07-04T11:27:43+00:00"
+        },
+        {
+            "name": "muvon/kiss-binary-codec",
+            "version": "0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Muvon/php-kiss-binary-codec.git",
+                "reference": "a0ed34e16cf56fc05962ebb52024d11510c80ca9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Muvon/php-kiss-binary-codec/zipball/a0ed34e16cf56fc05962ebb52024d11510c80ca9",
+                "reference": "a0ed34e16cf56fc05962ebb52024d11510c80ca9",
+                "shasum": ""
+            },
+            "require": {
+                "muvon/kiss-varint": "^0.2.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/functions.php"
+                ],
+                "psr-4": {
+                    "Muvon\\KISS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muvon Co. Ltd",
+                    "email": "contact@muvon.io"
+                }
+            ],
+            "description": "Binary codec for encoding multiple structures with predefined config",
+            "keywords": [
+                "binary",
+                "codec",
+                "decoder",
+                "encoder",
+                "kiss",
+                "lightweight"
+            ],
+            "support": {
+                "issues": "https://github.com/Muvon/php-kiss-binary-codec/issues",
+                "source": "https://github.com/Muvon/php-kiss-binary-codec/tree/0.4.0"
+            },
+            "time": "2021-08-26T19:40:49+00:00"
+        },
+        {
+            "name": "muvon/kiss-request-trait",
+            "version": "0.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Muvon/php-kiss-request-trait.git",
+                "reference": "c4b1b4149b527f6cc8582aa34f046665220c6849"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Muvon/php-kiss-request-trait/zipball/c4b1b4149b527f6cc8582aa34f046665220c6849",
+                "reference": "c4b1b4149b527f6cc8582aa34f046665220c6849",
+                "shasum": ""
+            },
+            "require": {
+                "muvon/kiss-binary-codec": "^0.4.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Muvon\\KISS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muvon Co. Ltd",
+                    "email": "contact@muvon.io"
+                }
+            ],
+            "description": "KISS implementation of RequestTrait with usage of CURL",
+            "keywords": [
+                "curl",
+                "http",
+                "json",
+                "kiss",
+                "request",
+                "trait"
+            ],
+            "support": {
+                "issues": "https://github.com/Muvon/php-kiss-request-trait/issues",
+                "source": "https://github.com/Muvon/php-kiss-request-trait/tree/0.9.0"
+            },
+            "time": "2021-08-26T19:45:17+00:00"
+        },
+        {
+            "name": "muvon/kiss-varint",
+            "version": "0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Muvon/php-kiss-varint.git",
+                "reference": "fbf597b114cde1da2fd0bca54a902994eb46bad3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Muvon/php-kiss-varint/zipball/fbf597b114cde1da2fd0bca54a902994eb46bad3",
+                "reference": "fbf597b114cde1da2fd0bca54a902994eb46bad3",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Muvon\\KISS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Muvon Co. Ltd",
+                    "email": "contact@muvon.io"
+                }
+            ],
+            "description": "varint read and pack convertion int/uint",
+            "keywords": [
+                "bitclout",
+                "decoder",
+                "encoder",
+                "int",
+                "kiss",
+                "lightweight",
+                "uint",
+                "varint"
+            ],
+            "support": {
+                "issues": "https://github.com/Muvon/php-kiss-varint/issues",
+                "source": "https://github.com/Muvon/php-kiss-varint/tree/0.2.0"
+            },
+            "time": "2021-08-17T10:08:27+00:00"
+        },
+        {
+            "name": "php-http/discovery",
+            "version": "1.19.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/discovery.git",
+                "reference": "0700efda8d7526335132360167315fdab3aeb599"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/discovery/zipball/0700efda8d7526335132360167315fdab3aeb599",
+                "reference": "0700efda8d7526335132360167315fdab3aeb599",
+                "shasum": ""
+            },
+            "require": {
+                "composer-plugin-api": "^1.0|^2.0",
+                "php": "^7.1 || ^8.0"
+            },
+            "conflict": {
+                "nyholm/psr7": "<1.0",
+                "zendframework/zend-diactoros": "*"
+            },
+            "provide": {
+                "php-http/async-client-implementation": "*",
+                "php-http/client-implementation": "*",
+                "psr/http-client-implementation": "*",
+                "psr/http-factory-implementation": "*",
+                "psr/http-message-implementation": "*"
+            },
+            "require-dev": {
+                "composer/composer": "^1.0.2|^2.0",
+                "graham-campbell/phpspec-skip-example-extension": "^5.0",
+                "php-http/httplug": "^1.0 || ^2.0",
+                "php-http/message-factory": "^1.0",
+                "phpspec/phpspec": "^5.1 || ^6.1 || ^7.3",
+                "sebastian/comparator": "^3.0.5 || ^4.0.8",
+                "symfony/phpunit-bridge": "^6.4.4 || ^7.0.1"
+            },
+            "type": "composer-plugin",
+            "extra": {
+                "class": "Http\\Discovery\\Composer\\Plugin",
+                "plugin-optional": true
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Discovery\\": "src/"
+                },
+                "exclude-from-classmap": [
+                    "src/Composer/Plugin.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Finds and installs PSR-7, PSR-17, PSR-18 and HTTPlug implementations",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "adapter",
+                "client",
+                "discovery",
+                "factory",
+                "http",
+                "message",
+                "psr17",
+                "psr7"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/discovery/issues",
+                "source": "https://github.com/php-http/discovery/tree/1.19.4"
+            },
+            "time": "2024-03-29T13:00:05+00:00"
+        },
+        {
+            "name": "psr/log",
+            "version": "3.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/log.git",
+                "reference": "79dff0b268932c640297f5208d6298f71855c03e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/log/zipball/79dff0b268932c640297f5208d6298f71855c03e",
+                "reference": "79dff0b268932c640297f5208d6298f71855c03e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Log\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for logging libraries",
+            "homepage": "https://github.com/php-fig/log",
+            "keywords": [
+                "log",
+                "psr",
+                "psr-3"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/log/tree/3.0.1"
+            },
+            "time": "2024-08-21T13:31:24+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "manticoresoftware/manticoresearch-php": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+}

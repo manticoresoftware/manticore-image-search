@@ -1,0 +1,11 @@
+{
+    "require": {
+        "manticoresoftware/manticoresearch-php": "dev-master",
+        "muvon/kiss-request-trait": "^0.9.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "php-http/discovery": true
+        }
+    }
+}

@@ -1,0 +1,52 @@
+#!/usr/bin/env /src/bin/php-exec
+<?php declare(strict_types=1);
+
+use App\Core\Image;
+use App\Core\Manticore;
+use App\Image\ImageModel;
+
+$data_dir = Input::get('data-dir');
+if (!$data_dir || !is_dir($data_dir)) {
+	Cli::error('Data directory is not set or not valid');
+}
+
+$target_dir = Input::get('target-dir');
+if (!$target_dir || !is_dir($target_dir)) {
+	Cli::error('Target directory is not set or not valid');
+}
+
+$Embed = container('embed');
+Cli::print('Scanning data directory: ' . $data_dir);
+$list = scandir($data_dir);
+foreach ($list as $item) {
+	$path = $data_dir . '/' . $item;
+	if (!is_file($path)) {
+		continue;
+	}
+
+	Cli::print('Loading ' . $item);
+	$url_path = '/files/' . $item[0] . '/' . $item[1] . '/' . $item;
+	Cli::print('url path: ' . $path);
+	$target_path = $target_dir . $url_path;
+	$target_path_dir = dirname($target_path);
+	if (!is_dir($target_path_dir)) {
+		mkdir($target_path_dir, 0755, true);
+	}
+	Cli::print('Copying ' . $path . ' -> ' . $target_path);
+	copy($path, $target_path);
+	Image::prepare($target_path)->unwrap();
+
+	$vector = $Embed
+		->getImageEmbeddings($path)
+		->unwrap();
+	$ImageItem = ImageModel::fromArray([
+		'id' => crc32($item),
+		'image_path' => $url_path,
+		'embeddings' => $vector,
+	]);
+
+	Manticore::add([$ImageItem])->unwrap();
+}
+
+Cli::print('done');
+

@@ -1,0 +1,4 @@
+env
+app/vendor/**
+docker/env.dev.sh
+docker/env.production.sh

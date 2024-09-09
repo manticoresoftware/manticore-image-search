@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+import io
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import base64
+from PIL import Image
+import torch
+from transformers import CLIPProcessor, CLIPModel
+import uvicorn
+
+app = FastAPI()
+
+model = CLIPModel.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M")
+processor = CLIPProcessor.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M")
+
+class ImageRequest(BaseModel):
+    image: str
+
+class TextRequest(BaseModel):
+    text: str
+
+@app.post("/image")
+async def get_vector_from_image(request: ImageRequest):
+    if not request.image:
+        raise HTTPException(status_code=400, detail="No image data provided")
+
+    try:
+        # Decode base64 string to bytes
+        image_bytes = base64.b64decode(request.image)
+        image = Image.open(io.BytesIO(image_bytes))
+
+        inputs = processor(images=image, return_tensors="pt")
+        with torch.no_grad():
+            image_features = model.get_image_features(**inputs)
+
+        return image_features.squeeze().tolist()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
+
+@app.post("/text")
+async def get_vector_from_text(request: TextRequest):
+    if not request.text:
+        raise HTTPException(status_code=400, detail="No text provided")
+
+    try:
+        inputs = processor(text=[request.text], return_tensors="pt")
+        with torch.no_grad():
+            text_features = model.get_text_features(**inputs)
+
+        return text_features.squeeze().tolist()
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error processing text: {str(e)}")
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)

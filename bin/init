@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -e
+
+if [ -e /.inited ]; then
+  echo 'Skipping first initialization'
+else
+  echo "Running first initiazliation"
+
+  echo "Preparing env/* dirs"
+  mkdir -p /src/env/backup /src/env/etc /src/env/log /src/env/run /src/env/tmp /src/env/var
+
+  echo "Touch /.inited"
+  touch /.inited
+fi
+
+php=$(which php)
+config=$($php --ini | head -n 1)
+config=${config##* }
+
+OPTS=''
+if [[ -f $config ]]; then
+  OPTS='-c '$config
+  echo "Found php config – $config"
+fi
+
+echo "Running Env::init()"
+$php $OPTS <<EOF
+<?php
+  Env::init();
+EOF
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+APP_DIR="$(dirname "$DIR")/app"
+test -x "$APP_DIR/scripts/view-compile" && $_
+test -x "$APP_DIR/scripts/model-schema-cache" && $_
+
+echo 'Done'
