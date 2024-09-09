@@ -61,6 +61,7 @@ a {
 img {
 	max-width: 100%;
 	height: auto;
+	aspect-ratio: 1/1;
 }
 
 /* General styles */
@@ -69,24 +70,96 @@ body {
 	background-color: #f0f0f0;
 }
 
+
 header {
-	width: 100%;
-	padding: 20px;
-	background-color: #ffffff;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	padding: 10px 20px;
+	background-color: #ffffff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Search input and button styles */
-.search-container {
+.header-left, .header-right {
+	flex: 1;
+}
+.header-left span {
+	font-size: 12px;
+}
+.header-left a {
+	text-decoration: none;
+	color: #879e2a;
+}
+.header-left h1 {
+	font-size: 1.2rem;
+	font-weight: bold;
+}
+
+.header-center {
+	flex: 2;
+}
+
+.header-right {
+	text-align: right;
+}
+
+.github-link {
 	display: flex;
+	justify-content: end;
 	align-items: center;
-	background-color: #f5f5f5;
+	color: #333;
+}
+
+.github-link svg {
+	margin-right: 5px;
+}
+
+.search-container {
+	position: relative;
+	width: 100%;
+	max-width: 600px;
+	margin: 0 auto;
+	border: 1px solid #d0d7de;
+	border-radius: 8px;
+}
+
+.search-input {
+	width: 100%;
+	padding: 10px 80px 10px 15px;
+	border: 1px solid #ccc;
 	border-radius: 25px;
-	padding: 5px 15px;
-	width: 300px;
+	font-size: 16px;
+	outline: none;
+}
+
+.icon-button {
+	background: none;
+	border: none;
+	cursor: pointer;
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform: translateY(-50%);
+	font-size: 18px;
+	color: #555;
+}
+
+.icon-button.upload-icon {
+	right: 40px;
+}
+
+.drag-drop-area {
+	display: none;
+	border: 2px dashed #ccc;
+	border-radius: 20px;
+	padding: 20px;
+	text-align: center;
+	margin-top: 20px;
+	background-color: #f9f9f9;
+}
+
+.drag-drop-area.active {
+	display: block;
 }
 
 .search-input {
@@ -144,7 +217,8 @@ header {
 
 .image-grid img {
 	width: 100%;
-	height: 200px;
+	height: auto;
+	aspect-ratio: 1/1;
 	object-fit: cover;
 	border-radius: 10px;
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -165,3 +239,15 @@ header {
 		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
 	}
 }
+
+/* Search results */
+.search-results-info {
+	text-align: center;
+	padding: 10px;
+	background-color: #f0f0f0;
+	border-bottom: 1px solid #ccc;
+	font-size: 14px;
+	color: #333;
+}
+
+.search-results-info span {font-weight: bold;}

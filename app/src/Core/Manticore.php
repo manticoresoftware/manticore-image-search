@@ -125,7 +125,7 @@ class Manticore {
 	protected static function getSearch(string $table, array $embeddings): Search {
 		$client = static::client();
 		$Index = $client->index($table);
-		$Query = new KnnQuery('embeddings', $embeddings, 1000);
+		$Query = new KnnQuery('embeddings', $embeddings, 10);
 		return $Index->search($Query);
 	}
 }
