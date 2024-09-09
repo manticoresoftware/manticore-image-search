@@ -33,8 +33,8 @@ view:
 
 view:production:
   compile_dir: '{{TMP_DIR}}/{{PROJECT_REV}}/views'
-  strip_comments: true
-  merge_lines: true
+  strip_comments: false
+  merge_lines: false
 
 session:
   name: 'SS'
@@ -71,3 +71,6 @@ embed:production:
 manticore:
   host: 'manticore'
   port: 9308
+
+manticore:production:
+  host: '127.0.0.1'
