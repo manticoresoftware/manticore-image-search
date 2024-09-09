@@ -65,9 +65,6 @@ foreach ($rewrites as $zone => $rules) {
 
 // Prepare all server names we should use
 $zones = config('common.zones');
-// Exclude zones which we explicit set
-$zones = array_filter($zones, fn($zone) => $zone !== 'ws');
-$ws_domain = "ws.{$domain}";
 $domains = array_map(
 	fn($zone) => "{$zone}.{$domain}",
 	$zones
@@ -92,6 +89,11 @@ $static_dir_map = implode(
 // Create directories for static files if not exists
 array_map(fn($zone) => mkdir($static_dir . "/{$zone}"), $zones);
 
+$cert_pem = '/etc/nginx/ssl/cert.pem';
+$cert_key = '/etc/nginx/ssl/cert.key';
+$ssl_port = config('server.ssl_port');
+
+$use_ssl = config('server.use_ssl');
 Env::configure(
 	__DIR__, [
 		'{{UPLOAD_MAX_FILESIZE}}' => config('common.upload_max_filesize'),
@@ -105,8 +107,8 @@ Env::configure(
 		'{{CORS_HEADERS}}' => config('cors.headers'),
 		'{{CORS_CREDENTIALS}}' => config('cors.credentials'),
 		'{{OPEN_FILE_CACHE}}' => config('server.open_file_cache'),
-		'{{WS_HOST}}' => config('ws.host'),
-		'{{WS_PORT}}' => config('ws.port'),
-		'{{WS_SERVER_NAME}}' => $ws_domain,
+		'{{SSL_LISTEN_DIRECTIVE}}' => $use_ssl ? "listen 	 $ssl_port ssl;" : '',
+		'{{SSL_CERT_DIRECTIVE}}' => $use_ssl ? "ssl_certificate $cert_pem;" : '',
+		'{{SSL_CERT_KEY_DIRECTIVE}}' => $use_ssl ? "ssl_certificate_key $cert_key;" : '',
 	]
 );

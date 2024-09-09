@@ -44,13 +44,16 @@ session:
 
 server:
   port: 80
+  ssl_port: 443
   auth_name: 'test'
   auth_pass: 'test'
   auth_routes: 'admin'
   open_file_cache: 'off'
+  use_ssl: false
 
 server:production:
   open_file_cache: 'max=100000 inactive=600s'
+  use_ssl: true
 
 cors:
   origin: '*'
@@ -61,10 +64,10 @@ cors:
 embed:
   host: 'embed'
   port: 8000
+
 embed:production:
-  host: '10.0.0.1'
+  host: '127.0.0.1'
+
 manticore:
   host: 'manticore'
   port: 9308
-manticore:production:
-  host: '10.0.0.1'
