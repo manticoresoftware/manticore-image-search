@@ -32,6 +32,10 @@ foreach ($list as $item) {
 	if (!is_dir($target_path_dir)) {
 		mkdir($target_path_dir, 0755, true);
 	}
+	if (is_file($target_path)) {
+		Cli::print('Skipping ' . $target_path);
+		continue;
+	}
 	Cli::print('Copying ' . $path . ' -> ' . $target_path);
 	copy($path, $target_path);
 	Image::prepare($target_path)->unwrap();
