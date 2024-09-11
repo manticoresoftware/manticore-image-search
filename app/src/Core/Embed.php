@@ -14,6 +14,7 @@ final class Embed {
 	 */
 	private function __construct(protected string $url) {
 		$this->request_type = 'json';
+		$this->request_timeout = 60;
 	}
 
 	/**

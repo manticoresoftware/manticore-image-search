@@ -26,6 +26,7 @@ while (true) {
 		$caption = $Embed->getImageCaption($path)->unwrap();
 		Cli::print(' caption: ' . $caption);
 		$query = sprintf('REPLACE INTO image (id, caption, embeddings) VALUES (%d, \'%s\', (%s))', $hit['_id'], addcslashes($caption, "'"), implode(',',$embeddings));
+		$Client->sql($query, true);
 	}
 
 	$offset += $limit;
