@@ -57,4 +57,20 @@ final class Embed {
 		}
 		return ok($vector);
 	}
+
+	/**
+	 * Get image caption
+	 * @param string $path
+	 * @return Result
+	 */
+	public function getImageCaption(string $path): Result {
+		$url = "{$this->url}/caption";
+		$image_base64 = base64_encode(file_get_contents($path));
+		$res = $this->request($url, ['image' => $image_base64]);
+		[$err, $caption] = $res;
+		if ($err) {
+			return err($err);
+		}
+		return ok($caption);
+	}
 }

@@ -17,7 +17,7 @@ class Manticore {
 	 * Get current instance of the client
 	 * @return Client
 	 */
-	protected static function client(): Client {
+	public static function client(): Client {
 		static $client;
 
 		if (!$client) {
@@ -79,6 +79,23 @@ class Manticore {
 	}
 
 	/**
+	 * Get random list of images that we display on the main image by default
+	 * @return Result<array<Model>>
+	 */
+	public static function getRandomList(): Result {
+		$Client = static::client();
+		$list = $Client->sql('SELECT * FROM image ORDER BY RAND() LIMIT 128');
+		$hits = $list['hits']['hits'] ?? [];
+		$docs = [];
+		if ($hits) {
+			foreach ($hits as $hit) {
+				$docs[] = ['id' => $hit['_id'], ... $hit['_source']];
+			}
+		}
+		return ok($docs);
+	}
+
+	/**
 	 * Perform the multimodel search and return combined list
 	 * @param  array<float> $embeddings
 	 * @param int $offset
@@ -90,7 +107,7 @@ class Manticore {
 		$items = [];
 		$search = static::getSearch('image', $embeddings);
 		$search->offset($offset);
-		$search->limit(100);
+		$search->limit(128);
 		$docs = $search->get();
 		$time += (int)($docs->getResponse()->getTime() * 1000);
 		$count = $docs->getTotal();
@@ -113,6 +130,33 @@ class Manticore {
 			'count' => $counters,
 			]
 		);
+	}
+
+	/**
+	 * Find similar by id
+	 * @param int $id
+	 * @return Result<array{time:int,list:array<Model>}>
+	 * @throws NoMoreNodesException
+	 * @throws RuntimeException
+	 */
+	public static function searchById(int $id): Result {
+		$Client = static::client();
+		$t = microtime(true);
+		$list = $Client->sql(sprintf('SELECT * FROM image WHERE knn(embeddings, 10, %s) LIMIT 128', $id), true);
+		$time = (int)((microtime(true) - $t) * 1000);
+		$docs = [];
+		foreach ($list as $id => $doc) {
+			$docs[] = ['id' => $id, ...$doc];
+		}
+
+		return ok([
+			'time' => $time,
+			'items' => $docs,
+			'count' => [
+				'total' => sizeof($docs),
+				'total_more' => false,
+			],
+		]);
 	}
 
 	/**

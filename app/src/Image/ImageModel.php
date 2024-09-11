@@ -9,6 +9,7 @@ final class ImageModel extends Model {
 	public string $image_path;
 	/** @var array<float> */
 	public array $embeddings;
+	public string $caption;
 
 	/**
 	 * Get current table name for org
@@ -27,6 +28,7 @@ final class ImageModel extends Model {
 		return "CREATE TABLE IF NOT EXISTS {$table} (
 			id bigint,
 			image_path text,
+			caption text,
 			embeddings float_vector knn_type='hnsw' knn_dims='512' hnsw_similarity='COSINE'
 			)";
 	}

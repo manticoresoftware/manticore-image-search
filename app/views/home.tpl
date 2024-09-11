@@ -5,11 +5,11 @@
 	</div>
 	<div class="header-center">
 		<div class="search-container">
-			<input type="text" id="searchInput" class="search-input" placeholder="Search images...">
-			<button id="uploadButton" class="icon-button upload-icon">
+			<input type="text" id="search-input" class="search-input" placeholder="Search images...">
+			<button id="upload-button" class="icon-button upload-icon">
 				<i class="fas fa-image"></i>
 			</button>
-			<button id="searchButton" class="icon-button">
+			<button id="search-button" class="icon-button">
 				<i class="fas fa-search"></i>
 			</button>
 		</div>
@@ -19,29 +19,45 @@
 	</div>
 </header>
 <main>
-	<div id="dragDropArea" class="drag-drop-area">
-		<p>Drag and drop an image here or click to select</p>
-		<input type="file" id="fileInput" style="display: none;" accept="image/*">
+	<div id="drag-drop-area" class="drag-drop-area">
+		<p>Drag and drop an image here or <span>click to select</span></p>
+		<input type="file" id="file-input" style="display: none;" accept="image/*">
 	</div>
 	<div class="search-results-info">
 		<div id="image-preview" style="display: none; text-align: center; margin: 10px 0;">
 			<img src="" alt="Preview" style="max-width: 100px; max-height: 100px;">
 		</div>
-		Found <span id="result-count">0</span> results in <span id="search-time">0</span> ms
+		Found in <span id="search-time">0</span> ms
 	</div>
 	<div class="image-grid" id="image-list">
-		<!-- Add your images here -->
-		<img src="https://via.placeholder.com/300" alt="Image 1">
-		<img src="https://via.placeholder.com/300" alt="Image 2">
-		<img src="https://via.placeholder.com/300" alt="Image 3">
-		<img src="https://via.placeholder.com/300" alt="Image 4">
-		<img src="https://via.placeholder.com/300" alt="Image 5">
-		<img src="https://via.placeholder.com/300" alt="Image 6">
-		<!-- Add more images as needed -->
+		{image_list}
+		<div class="image-container">
+			<img src="{image_path}" alt="{caption}">
+			<button class="show-similar-btn" data-id="{id}">Show similar</button>
+		</div>
+		{/image_list}
 	</div>
 </main>
 <script>
-const renderFn = ([err, data]) => {
+function toggleDragDropArea() {
+	const dragDropArea = document.getElementById('drag-drop-area');
+	dragDropArea.classList.toggle('active');
+}
+
+function reset(text = false) {
+	const dragDropArea = document.getElementById('drag-drop-area');
+	dragDropArea.classList.remove('active');
+
+	// Reset preview image first
+	const imagePreview = document.getElementById('image-preview');
+	imagePreview.style.display = 'none'; // Hide preview
+	if (text) {
+		const searchTerm = document.getElementById('search-input').value;
+		searchTerm.value = '';
+	}
+}
+
+function render([err, data]) {
 	const imageList = document.getElementById('image-list');
 	if (err) {
 		imageList.innerHTML = '<p>Error: ' + err + '</p>';
@@ -50,24 +66,27 @@ const renderFn = ([err, data]) => {
 	}
 
 	imageList.innerHTML = '';
-	const searchResultsCount = document.getElementById('result-count')
 	const searchTime = document.getElementById('search-time')
-	searchResultsCount.textContent = data.count.total + (data.count.total_more ? '+' : '');
 	searchTime.textContent = data.time.toFixed(0);
 	data.items.forEach(result => {
+		const item = document.createElement('div');
+		item.classList.add('image-container');
 		const img = document.createElement('img');
 		img.src = result.image_path;
-		img.alt = result.alt;
-		imageList.appendChild(img);
+		img.alt = result.caption;
+		item.appendChild(img);
+		const similarBtn = document.createElement('button');
+		similarBtn.classList.add('show-similar-btn');
+		similarBtn.setAttribute('data-id', result.id);
+		similarBtn.innerText = 'Show similar';
+		item.appendChild(similarBtn);
+		imageList.appendChild(item);
 	});
-};
+}
 
 function performSearch() {
-	var searchTerm = document.getElementById('searchInput').value;
-
-	// Reset preview image first
-	const imagePreview = document.getElementById('image-preview');
-	imagePreview.style.display = 'none'; // Hide preview
+	var searchTerm = document.getElementById('search-input').value;
+	reset();
 
 	fetch('/api/search-by-text', {
 		method: 'POST',
@@ -77,31 +96,55 @@ function performSearch() {
 		body: JSON.stringify({ query: searchTerm })
 	})
 		.then(response => response.json())
-		.then(renderFn)
+		.then(render)
 		.catch(error => {
 			console.error('Error:', error);
 		});
 }
 
-document.getElementById('searchButton').addEventListener('click', performSearch);
+function performSimilarSearch(ev) {
+	const el = ev.target;
+	reset();
+	const id = el.getAttribute('data-id');
+	const imagePath = el.parentNode.querySelector('img').src;
 
-document.getElementById('searchInput').addEventListener('keypress', function(event) {
+	// Display preview
+	const previewDiv = document.getElementById('image-preview');
+	const previewImg = previewDiv.querySelector('img');
+	previewImg.src = imagePath;
+	previewDiv.style.display = 'block';
+
+	fetch('/api/search-by-id', {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify({ id })
+	})
+		.then(response => response.json())
+		.then(render)
+		.catch(error => {
+			console.error('Error:', error);
+		});
+}
+
+document.getElementById('image-list').addEventListener('click', performSimilarSearch);
+document.getElementById('search-button').addEventListener('click', performSearch);
+
+document.getElementById('search-input').addEventListener('keypress', function(event) {
 	if (event.key === 'Enter') {
 		event.preventDefault();
 		performSearch();
 	}
 });
 
-document.getElementById('uploadButton').addEventListener('click', function() {
-	const dragDropArea = document.getElementById('dragDropArea');
-	dragDropArea.classList.toggle('active');
-});
+document.getElementById('upload-button').addEventListener('click', toggleDragDropArea);
 
-const dragDropArea = document.getElementById('dragDropArea');
+const dragDropArea = document.getElementById('drag-drop-area');
 
 dragDropArea.addEventListener('click', function(e) {
 	e.stopPropagation(); // Prevent the click from bubbling up
-	document.getElementById('fileInput').click();
+	document.getElementById('file-input').click();
 });
 
 dragDropArea.addEventListener('dragover', function(e) {
@@ -123,9 +166,7 @@ dragDropArea.addEventListener('drop', function(e) {
 
 function handleFile(file) {
 	if (file) {
-		// Reset preview image first
-		const imagePreview = document.getElementById('image-preview');
-		imagePreview.style.display = 'none'; // Hide preview
+		reset(true);
 
 		// Show preview
 		const reader = new FileReader();
@@ -151,14 +192,14 @@ function handleFile(file) {
 				}
 				return response.json();
 			})
-			.then(renderFn)
+			.then(render)
 			.catch(error => {
 				console.error('Error:', error);
 			});
 	}
 }
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
+document.getElementById('file-input').addEventListener('change', function(event) {
 	const file = event.target.files[0];
 	handleFile(file);
 });

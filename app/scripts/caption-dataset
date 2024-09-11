@@ -1,0 +1,33 @@
+#!/usr/bin/env /src/bin/php-exec
+<?php declare(strict_types=1);
+
+use App\Core\Manticore;
+
+$Client = Manticore::client();
+$Embed = container('embed');
+$offset = 0;
+$limit = 1000;
+while (true) {
+	$list = $Client->sql("SELECT * FROM image WHERE id > $offset ORDER BY ID ASC LIMIT $limit");
+	$hits = $list['hits']['hits'] ?? [];
+
+	if (empty($hits)) {
+		break;
+	}
+
+	foreach ($hits as $hit) {
+		Cli::print('#' . $hit['_id']);
+		if ($hit['_source']['caption']) {
+			Cli::print(' skipping');
+			continue;
+		}
+		$path = getenv('ENV_DIR') . $hit['_source']['image_path'];
+		$embeddings = $hit['_source']['embeddings'];
+		$caption = $Embed->getImageCaption($path)->unwrap();
+		Cli::print(' caption: ' . $caption);
+		$query = sprintf('REPLACE INTO image (id, caption, embeddings) VALUES (%d, \'%s\', (%s))', $hit['_id'], addcslashes($caption, "'"), implode(',',$embeddings));
+	}
+
+	$offset += $limit;
+}
+

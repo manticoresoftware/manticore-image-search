@@ -5,51 +5,72 @@ from pydantic import BaseModel
 import base64
 from PIL import Image
 import torch
-from transformers import CLIPProcessor, CLIPModel
+from transformers import CLIPProcessor, CLIPModel, AutoProcessor, AutoModelForCausalLM
 import uvicorn
 
 app = FastAPI()
 
-model = CLIPModel.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M")
-processor = CLIPProcessor.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M")
+clip_model = CLIPModel.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M")
+clip_processor = CLIPProcessor.from_pretrained("wkcn/TinyCLIP-ViT-61M-32-Text-29M-LAION400M")
+
+smallcap_processor = AutoProcessor.from_pretrained("microsoft/git-base-coco")
+smallcap_model = AutoModelForCausalLM.from_pretrained("microsoft/git-base-coco")
 
 class ImageRequest(BaseModel):
-    image: str
+	image: str
 
 class TextRequest(BaseModel):
-    text: str
+	text: str
 
 @app.post("/image")
 async def get_vector_from_image(request: ImageRequest):
-    if not request.image:
-        raise HTTPException(status_code=400, detail="No image data provided")
+	if not request.image:
+		raise HTTPException(status_code=400, detail="No image data provided")
 
-    try:
-        # Decode base64 string to bytes
-        image_bytes = base64.b64decode(request.image)
-        image = Image.open(io.BytesIO(image_bytes))
+	try:
+		image_bytes = base64.b64decode(request.image)
+		image = Image.open(io.BytesIO(image_bytes))
 
-        inputs = processor(images=image, return_tensors="pt")
-        with torch.no_grad():
-            image_features = model.get_image_features(**inputs)
+		inputs = clip_processor(images=image, return_tensors="pt")
+		with torch.no_grad():
+			image_features = clip_model.get_image_features(**inputs)
 
-        return image_features.squeeze().tolist()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
+		return image_features.squeeze().tolist()
+	except Exception as e:
+		raise HTTPException(status_code=400, detail=f"Error processing image: {str(e)}")
 
 @app.post("/text")
 async def get_vector_from_text(request: TextRequest):
-    if not request.text:
-        raise HTTPException(status_code=400, detail="No text provided")
+	if not request.text:
+		raise HTTPException(status_code=400, detail="No text provided")
 
-    try:
-        inputs = processor(text=[request.text], return_tensors="pt")
-        with torch.no_grad():
-            text_features = model.get_text_features(**inputs)
+	try:
+		inputs = clip_processor(text=[request.text], return_tensors="pt")
+		with torch.no_grad():
+			text_features = clip_model.get_text_features(**inputs)
 
-        return text_features.squeeze().tolist()
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error processing text: {str(e)}")
+		return text_features.squeeze().tolist()
+	except Exception as e:
+		raise HTTPException(status_code=400, detail=f"Error processing text: {str(e)}")
+
+@app.post("/caption")
+async def generate_caption(request: ImageRequest):
+	if not request.image:
+		raise HTTPException(status_code=400, detail="No image data provided")
+
+	try:
+		image_bytes = base64.b64decode(request.image)
+		image = Image.open(io.BytesIO(image_bytes))
+
+		inputs = smallcap_processor(images=image, return_tensors="pt")
+		with torch.no_grad():
+			generated_ids = smallcap_model.generate(pixel_values=inputs.pixel_values, max_length=50)
+
+		generated_caption = smallcap_processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
+		return generated_caption
+	except Exception as e:
+		raise HTTPException(status_code=400, detail=f"Error generating caption: {str(e)}")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+	uvicorn.run(app, host="0.0.0.0", port=8000)
+
