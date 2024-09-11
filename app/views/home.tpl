@@ -32,7 +32,7 @@
 	<div class="image-grid" id="image-list">
 		{image_list}
 		<div class="image-container">
-			<img src="{image_path}" alt="{caption}">
+			<img src="{image_path}" alt="{caption}" loading="lazy">
 			<button class="show-similar-btn" data-id="{id}">Show similar</button>
 		</div>
 		{/image_list}
@@ -74,6 +74,7 @@ function render([err, data]) {
 		const img = document.createElement('img');
 		img.src = result.image_path;
 		img.alt = result.caption;
+		img.loading = 'lazy';
 		item.appendChild(img);
 		const similarBtn = document.createElement('button');
 		similarBtn.classList.add('show-similar-btn');

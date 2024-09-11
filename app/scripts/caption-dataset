@@ -21,11 +21,12 @@ while (true) {
 			Cli::print(' skipping');
 			continue;
 		}
-		$path = getenv('ENV_DIR') . $hit['_source']['image_path'];
+		$image_path = $hit['_source']['image_path'];
+		$path = getenv('ENV_DIR') . $image_path;
 		$embeddings = $hit['_source']['embeddings'];
 		$caption = $Embed->getImageCaption($path)->unwrap();
 		Cli::print(' caption: ' . $caption);
-		$query = sprintf('REPLACE INTO image (id, caption, embeddings) VALUES (%d, \'%s\', (%s))', $hit['_id'], addcslashes($caption, "'"), implode(',',$embeddings));
+		$query = sprintf('REPLACE INTO image (id, image_path, caption, embeddings) VALUES (%d, \'%s\', \'%s\', (%s))', $hit['_id'], $image_path, addcslashes($caption, "'"), implode(',',$embeddings));
 		$Client->sql($query, true);
 	}
 
