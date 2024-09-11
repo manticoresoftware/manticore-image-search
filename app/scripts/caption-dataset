@@ -5,10 +5,10 @@ use App\Core\Manticore;
 
 $Client = Manticore::client();
 $Embed = container('embed');
-$offset = 0;
+$id = 0;
 $limit = 1000;
 while (true) {
-	$list = $Client->sql("SELECT * FROM image WHERE id > $offset ORDER BY ID ASC LIMIT $limit");
+	$list = $Client->sql("SELECT * FROM image WHERE id > $id ORDER BY ID ASC LIMIT $limit");
 	$hits = $list['hits']['hits'] ?? [];
 
 	if (empty($hits)) {
@@ -17,6 +17,7 @@ while (true) {
 
 	foreach ($hits as $hit) {
 		Cli::print('#' . $hit['_id']);
+		$id = max($hit['_id'], $id);
 		if ($hit['_source']['caption']) {
 			Cli::print(' skipping');
 			continue;
@@ -29,7 +30,6 @@ while (true) {
 		$query = sprintf('REPLACE INTO image (id, image_path, caption, embeddings) VALUES (%d, \'%s\', \'%s\', (%s))', $hit['_id'], $image_path, addcslashes($caption, "'"), implode(',',$embeddings));
 		$Client->sql($query, true);
 	}
-
-	$offset += $limit;
 }
+Cli::print('Done');
 
