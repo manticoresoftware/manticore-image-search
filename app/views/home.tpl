@@ -20,6 +20,8 @@
 </header>
 <main>
 	<div id="drag-drop-area" class="drag-drop-area">
+
+		<p>{>icon/upload}</p>
 		<p>Drag and drop an image here or <span>click to select</span></p>
 		<input type="file" id="file-input" style="display: none;" accept="image/*">
 	</div>

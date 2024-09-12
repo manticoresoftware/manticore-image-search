@@ -157,6 +157,14 @@ header {
 	margin-top: 20px;
 	background-color: #f9f9f9;
 	cursor: pointer;
+	flex-direction: column;
+	min-height: 160px;
+	justify-content: center;
+}
+.drag-drop-area svg {
+	width: 32px;
+	height: 32px;
+	fill: #555;
 }
 .drag-drop-area span {
 	text-decoration: underline;
@@ -164,7 +172,7 @@ header {
 }
 
 .drag-drop-area.active {
-	display: block;
+	display: flex;
 }
 
 .search-input {
