@@ -23,7 +23,7 @@ server {
   {{SSL_CERT_DIRECTIVE}}
   {{SSL_CERT_KEY_DIRECTIVE}}
 
-  server_name  _;
+	server_name  {{SERVER_NAME}};
   client_max_body_size {{UPLOAD_MAX_FILESIZE}};
 
   include {{CONFIG_DIR}}/nginx_route_map.conf;

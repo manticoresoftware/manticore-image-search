@@ -19,10 +19,10 @@ networks:
     driver: bridge
 
 volumes:
-  env-storage:
-  manticore-storage:
-  huggingface-storage:
-  tmp-storage:
+  manticore-image-search-env-storage:
+  manticore-image-search-manticore-storage:
+  manticore-image-search-huggingface-storage:
+  manticore-image-search-tmp-storage:
     driver_opts:
       type: tmpfs
       device: tmpfs
@@ -45,7 +45,7 @@ services:
     cap_add:
       - CHOWN
     volumes:
-      - huggingface-storage:/root/.cache:rw
+      - manticore-image-search-huggingface-storage:/root/.cache:rw
     ports:
       - 8000:8000
     <<: [*default_dev_networks,*default_dev_restart]
@@ -60,6 +60,7 @@ services:
     labels:
       - role=nginx
     working_dir: /src
+    restart: "always"
     expose:
       - '80'
     cap_drop:
@@ -74,7 +75,7 @@ services:
     environment:
       - PROJECT=manticore-image-search
     volumes:
-      - env-storage:/src/env
+      - manticore-image-search-env-storage:/src/env
     ports:
       - '8100:80'
     <<: [*default_dev_networks,*default_dev_restart]
@@ -96,7 +97,7 @@ services:
     environment:
       - APP_ENV=dev
     volumes:
-      - env-storage:/src/env:rw
+      - manticore-image-search-env-storage:/src/env:rw
     <<: [*default_dev_networks,*default_dev_restart]
     hostname: php
 
@@ -109,7 +110,7 @@ services:
     environment:
       - EXTRA=1
     volumes:
-      - manticore-storage:/var/lib/manticore:rw
+      - manticore-image-search-manticore-storage:/var/lib/manticore:rw
       - ./docker/containers/manticore/backup:/docker-entrypoint-initdb.d:rw
     <<: [*default_dev_networks]
     hostname: manticore
