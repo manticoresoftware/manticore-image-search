@@ -50,7 +50,10 @@ foreach ($routes as $route => $params) {
 
 // Form domain related rewrite rules
 $domain = config('common.domain');
-$rewrite_rules = implode(PHP_EOL, $rules) . PHP_EOL;
+$rewrite_rules = '';
+foreach ($rewrites as $zone => $rules) {
+	$rewrite_rules = implode(PHP_EOL, $rules) . PHP_EOL;
+}
 
 // Prepare all server names we should use
 $zones = config('common.zones');
