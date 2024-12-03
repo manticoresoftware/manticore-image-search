@@ -23,7 +23,7 @@ server {
   {{SSL_CERT_DIRECTIVE}}
   {{SSL_CERT_KEY_DIRECTIVE}}
 
-	server_name  {{SERVER_NAME}};
+  server_name  _;
   client_max_body_size {{UPLOAD_MAX_FILESIZE}};
 
   include {{CONFIG_DIR}}/nginx_route_map.conf;
@@ -105,40 +105,5 @@ server {
     include        {{CONFIG_DIR}}/nginx_fastcgi_params;
     fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
     fastcgi_pass app-fpm;
-  }
-}
-
-# Default server
-server {
-  listen {{SERVER_PORT}} default_server;
-  server_name  _;
-
-  # Stub status
-  location = /nginx_status {
-    allow 127.0.0.1;
-    allow 10.0.0.0/8;
-    allow 192.168.0.0/16;
-    allow 172.16.0.0/12;
-    deny all;
-
-    stub_status on;
-    access_log off;
-  }
-
-  location = /php_status {
-    allow 127.0.0.1;
-    allow 10.0.0.0/8;
-    allow 192.168.0.0/16;
-    allow 172.16.0.0/12;
-    deny all;
-    access_log off;
-
-    include      {{CONFIG_DIR}}/nginx_fastcgi_params;
-    fastcgi_param SCRIPT_FILENAME $fastcgi_script_name;
-    fastcgi_pass app-fpm;
-  }
-
-  location / {
-    return 444;
   }
 }

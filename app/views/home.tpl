@@ -34,7 +34,7 @@
 	<div class="image-grid" id="image-list">
 		{image_list}
 		<div class="image-container">
-			<img src="{image_path}" alt="{caption}" loading="lazy">
+			<img src="{global.image_url_prefix}{image_path}" alt="{caption}" loading="lazy">
 			<button class="show-similar-btn" data-id="{id}">Show similar</button>
 		</div>
 		{/image_list}

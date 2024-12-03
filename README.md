@@ -11,15 +11,20 @@ To run the project on your local machine, you need to have Docker installed with
 ```
 git clone https://github.com/manticoresoftware/manticore-image-search.git
 cd manticore-image-search
+cd containers/manticore
+
+wget https://github.com/manticoresoftware/manticore-image-search/releases/download/241203/backup.tar.gz && rm -fr backup && tar xzf backup.tar.gz
+
+cd ../..
 docker compose down -v
 docker compose up
 ```
 
-After completing these steps, the project should be accessible at [http://localhost/](http://localhost/). 
+After completing these steps, the project should be accessible at [http://localhost/](http://localhost/).
 
 ## Further configuration
 
-The default port for the server is 80, so if you need to change it, update the `nginx` section in `app/config/app.ini.tpl`.
+The default port for the server is 80, so if you need to change it, update the `nginx` section in `app/config/app.ini.yml`.
 
 ## Preparing for Deployment
 

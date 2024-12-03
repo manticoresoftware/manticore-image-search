@@ -9,7 +9,7 @@ x-production-networks: &default_production_networks
   network_mode: host
 
 x-dev-restart: &default_dev_restart
-  restart: 'no'
+  restart: 'always'
 
 x-production-restart: &default_production_restart
   restart: always
@@ -19,10 +19,10 @@ networks:
     driver: bridge
 
 volumes:
-  manticore-image-search-env-storage:
-  manticore-image-search-manticore-storage:
-  manticore-image-search-huggingface-storage:
-  manticore-image-search-tmp-storage:
+  image-search-env-storage:
+  image-search-manticore-storage:
+  image-search-huggingface-storage:
+  image-search-tmp-storage:
     driver_opts:
       type: tmpfs
       device: tmpfs
@@ -36,7 +36,7 @@ services:
       dockerfile: ./docker/images/Dockerfile-embed
       context: ..
     container_name: manticore-image-search.embed
-    image: manticore-image-search/embed:1.0.1
+    image: manticore-image-search/embed:1.0.0
     labels:
       - role=embed
     working_dir: /src
@@ -45,7 +45,7 @@ services:
     cap_add:
       - CHOWN
     volumes:
-      - manticore-image-search-huggingface-storage:/root/.cache:rw
+      - image-search-huggingface-storage:/root/.cache:rw
     ports:
       - 8000:8000
     <<: [*default_dev_networks,*default_dev_restart]
@@ -56,13 +56,12 @@ services:
       dockerfile: ./docker/images/Dockerfile-nginx
       context: ..
     container_name: manticore-image-search.nginx
-    image: manticore-image-search/nginx:1.0.4
+    image: manticore-image-search/nginx:1.0.0
     labels:
       - role=nginx
     working_dir: /src
-    restart: "always"
-    expose:
-      - '80'
+    ports:
+      - '80:80'
     cap_drop:
       - ALL
     cap_add:
@@ -75,9 +74,7 @@ services:
     environment:
       - PROJECT=manticore-image-search
     volumes:
-      - manticore-image-search-env-storage:/src/env
-    ports:
-      - '8100:80'
+      - image-search-env-storage:/src/env
     <<: [*default_dev_networks,*default_dev_restart]
     hostname: nginx
 
@@ -86,7 +83,7 @@ services:
       dockerfile: ./docker/images/Dockerfile-php
       context: ..
     container_name: manticore-image-search.php
-    image: manticore-image-search/php:1.0.3
+    image: manticore-image-search/php:1.0.1
     labels:
       - role=php
     working_dir: /src
@@ -96,21 +93,21 @@ services:
       - CHOWN
     environment:
       - APP_ENV=dev
+      - IMAGE_URL_PREFIX=https://image.manticoresearch.com
     volumes:
-      - manticore-image-search-env-storage:/src/env:rw
+      - image-search-env-storage:/src/env:rw
     <<: [*default_dev_networks,*default_dev_restart]
     hostname: php
 
   manticore:
     container_name: manticore-image-search.manticore
-    image: manticoresearch/manticore:dev-6.3.7-626b327
+    image: manticoresearch/manticore:6.3.8
     labels:
       - role=manticore
-    restart: "always"
     environment:
       - EXTRA=1
     volumes:
-      - manticore-image-search-manticore-storage:/var/lib/manticore:rw
+      - image-search-manticore-storage:/var/lib/manticore:rw
       - ./docker/containers/manticore/backup:/docker-entrypoint-initdb.d:rw
-    <<: [*default_dev_networks]
+    <<: [*default_dev_networks,*default_dev_restart]
     hostname: manticore

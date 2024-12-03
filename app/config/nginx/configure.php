@@ -52,7 +52,8 @@ foreach ($routes as $route => $params) {
 $domain = config('common.domain');
 $rewrite_rules = '';
 foreach ($rewrites as $zone => $rules) {
-	$rewrite_rules = implode(PHP_EOL, $rules) . PHP_EOL;
+	$rewrite_rules .= implode(PHP_EOL, $rules) . PHP_EOL;
+	break;
 }
 
 // Prepare all server names we should use
