@@ -36,7 +36,7 @@ services:
       dockerfile: ./docker/images/Dockerfile-embed
       context: ..
     container_name: manticore-image-search.embed
-    image: manticore-image-search/embed:1.0.0
+    image: manticore-image-search/embed:1.0.1
     labels:
       - role=embed
     working_dir: /src
@@ -56,7 +56,7 @@ services:
       dockerfile: ./docker/images/Dockerfile-nginx
       context: ..
     container_name: manticore-image-search.nginx
-    image: manticore-image-search/nginx:1.0.0
+    image: manticore-image-search/nginx:1.0.3
     labels:
       - role=nginx
     working_dir: /src
@@ -85,7 +85,7 @@ services:
       dockerfile: ./docker/images/Dockerfile-php
       context: ..
     container_name: manticore-image-search.php
-    image: manticore-image-search/php:1.0.0
+    image: manticore-image-search/php:1.0.2
     labels:
       - role=php
     working_dir: /src
@@ -94,7 +94,7 @@ services:
     cap_add:
       - CHOWN
     environment:
-      - APP_ENV=$ENV
+      - APP_ENV=dev
     volumes:
       - env-storage:/src/env:rw
     <<: [*default_dev_networks,*default_dev_restart]

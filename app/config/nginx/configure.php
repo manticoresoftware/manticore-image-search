@@ -50,18 +50,7 @@ foreach ($routes as $route => $params) {
 
 // Form domain related rewrite rules
 $domain = config('common.domain');
-$rewrite_rules = '';
-foreach ($rewrites as $zone => $rules) {
-	// Special case for www we use single domain
-	if ($zone === 'www') {
-		$condition = "\$host = {$domain}";
-	} else {
-		$condition = "\$host = {$zone}.{$domain}";
-	}
-	$rewrite_rules .= "if ({$condition}) {" . PHP_EOL
-	. implode(PHP_EOL, $rules) . PHP_EOL
-	. '}' . PHP_EOL;
-}
+$rewrite_rules = implode(PHP_EOL, $rules) . PHP_EOL;
 
 // Prepare all server names we should use
 $zones = config('common.zones');
