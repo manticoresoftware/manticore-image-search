@@ -1,7 +1,7 @@
 FROM muvon/php:8.3.10-fpm
 LABEL maintainer="Manticore Software Ltd. <contact@manticoresearch.com>"
 
-RUN php-ext add msgpack yaml sodium && \
+RUN php-ext add yaml && \
 	apk add --update curl bash openssl imagemagick && \
   rm -fr /var/cache/apk/* && \
   rm -fr /tmp/*
