@@ -110,6 +110,6 @@ services:
       - EXTRA=1
     volumes:
       - manticore-storage:/var/lib/manticore:rw
-      - docker/containers/manticore/backup:/docker-entrypoint-initdb.d:rw
+      - ./docker/containers/manticore/backup:/docker-entrypoint-initdb.d:rw
     <<: [*default_dev_networks]
     hostname: manticore
