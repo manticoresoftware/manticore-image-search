@@ -103,7 +103,7 @@ services:
 
   manticore:
     container_name: manticore-image-search.manticore
-    image: manticoresearch/manticore:6.3.8
+    image: manticoresearch/manticore:dev-6.3.7-626b327
     labels:
       - role=manticore
     environment:
