@@ -26,9 +26,9 @@ After completing these steps, the project should be accessible at [http://localh
 
 The default port for the server is 80, so if you need to change it, update the `nginx` section in `app/config/app.ini.yml`.
 
-## Preparing for Deployment
+## Preparing for deployment
 
-If you aim to use this project beyond a Manticore Search demo, such as an alternative to GitHub's issue search, there's a method for deploying it on a remote server. First, install [yoda](https://github.com/Muvon/yoda) on your machine and familiarize yourself with its documentation.
+If you plan to extend this project beyond a simple Manticore Image Search demo and want to run your own version from this repository, we've got you covered with remote server deployment. To get started, first grab [yoda](https://github.com/Muvon/yoda) and give its documentation a quick read to understand how it works.
 
 #### Deployment
 
@@ -38,7 +38,7 @@ For deployment, tweak the `docker/Envfile` with your server details and make sur
 yoda deploy --env=production
 ```
 
-#### Setting Up a New Server in 5 Steps
+#### Setting up a new server in 5 steps
 
 Please remember, deployment happens from the default branch to the server from the local machine. You can use the `--branch` flag with the `yoda` command to deploy from a different branch.
 
