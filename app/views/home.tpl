@@ -74,7 +74,7 @@ function render([err, data]) {
 		const item = document.createElement('div');
 		item.classList.add('image-container');
 		const img = document.createElement('img');
-		img.src = result.image_path;
+		img.src = "{image_url_prefix}" + result.image_path;
 		img.alt = result.caption;
 		img.loading = 'lazy';
 		item.appendChild(img);
@@ -114,7 +114,7 @@ function performSimilarSearch(ev) {
 	// Display preview
 	const previewDiv = document.getElementById('image-preview');
 	const previewImg = previewDiv.querySelector('img');
-	previewImg.src = imagePath;
+	previewImg.src = "{image_url_prefix}" + imagePath;
 	previewDiv.style.display = 'block';
 
 	fetch('/api/search-by-id', {
