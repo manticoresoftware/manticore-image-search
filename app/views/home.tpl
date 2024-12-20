@@ -114,7 +114,7 @@ function performSimilarSearch(ev) {
 	// Display preview
 	const previewDiv = document.getElementById('image-preview');
 	const previewImg = previewDiv.querySelector('img');
-	previewImg.src = "{image_url_prefix}" + imagePath;
+	previewImg.src = imagePath;
 	previewDiv.style.display = 'block';
 
 	fetch('/api/search-by-id', {
