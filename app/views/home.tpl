@@ -34,7 +34,7 @@
 	<div class="image-grid" id="image-list">
 		{image_list}
 		<div class="image-container">
-			<img src="{image_path}" alt="{caption}" loading="lazy">
+			<img src="{global.image_url_prefix}{image_path}" alt="{caption}" loading="lazy">
 			<button class="show-similar-btn" data-id="{id}">Show similar</button>
 		</div>
 		{/image_list}
@@ -74,7 +74,7 @@ function render([err, data]) {
 		const item = document.createElement('div');
 		item.classList.add('image-container');
 		const img = document.createElement('img');
-		img.src = result.image_path;
+		img.src = "{image_url_prefix}" + result.image_path;
 		img.alt = result.caption;
 		img.loading = 'lazy';
 		item.appendChild(img);
