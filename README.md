@@ -13,12 +13,14 @@ git clone https://github.com/manticoresoftware/manticore-image-search.git
 cd manticore-image-search
 cd docker/containers/manticore
 
-wget https://github.com/manticoresoftware/manticore-image-search/releases/download/241204/backup.tar.gz && rm -fr backup && tar xzf backup.tar.gz
+wget https://github.com/manticoresoftware/manticore-image-search/releases/download/241204/backup.tar.gz && rm -fr backup && sudo tar --numeric-owner -xzpf backup.tar.gz
 
 cd ../..
 docker compose down -v
 docker compose up
 ```
+
+Take note that running untar as root is essential to maintain proper user permissions and ensure they are correctly mapped to the manticore user within the container.
 
 After completing these steps, the project should be accessible at [http://localhost/](http://localhost/).
 
