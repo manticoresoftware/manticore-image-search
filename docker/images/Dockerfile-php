@@ -1,4 +1,4 @@
-FROM manticoresearch/php-fpm:8.3.10
+FROM manticoresearch/php-fpm:8.3.36
 LABEL maintainer="Manticore Software Ltd. <contact@manticoresearch.com>"
 
 COPY . /src
