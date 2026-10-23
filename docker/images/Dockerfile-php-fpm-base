@@ -1,0 +1,23 @@
+# Reproducible PHP-FPM base image for the Image Search demo.
+FROM php:8.3.36-fpm-bookworm
+LABEL maintainer="Manticore Software Ltd. <contact@manticoresearch.com>"
+
+COPY --from=mlocati/php-extension-installer:2 /usr/bin/install-php-extensions /usr/local/bin/
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+RUN install-php-extensions gd mysqli msgpack pdo_mysql yaml zip && \
+  rm -f /usr/local/etc/php/conf.d/docker-php-ext-msgpack.ini \
+    /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini \
+    /usr/local/etc/php/conf.d/docker-php-ext-sodium.ini \
+    /usr/local/etc/php/conf.d/docker-php-ext-yaml.ini
+
+RUN apt-get update && apt-get install -y --no-install-recommends locales && \
+  sed -i 's/^# *en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+  locale-gen en_US.UTF-8 && \
+  rm -rf /var/lib/apt/lists/* && \
+  mkdir -p /etc/php
+
+# Preserve the locations expected by the existing application Dockerfile.
+# Keep the extension INI files installed by the official PHP image alongside
+# the project's custom /etc/php/conf.d files.
+ENV PHPRC=/etc/php
+ENV PHP_INI_SCAN_DIR=/usr/local/etc/php/conf.d:/etc/php/conf.d

@@ -1,0 +1,65 @@
+name: PHP-FPM base image
+
+on:
+  pull_request:
+    paths:
+      - 'docker/images/Dockerfile-php-fpm-base'
+      - '.github/workflows/php-fpm-base.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'docker/images/Dockerfile-php-fpm-base'
+      - '.github/workflows/php-fpm-base.yml'
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build patched base
+        run: docker build -f docker/images/Dockerfile-php-fpm-base -t manticoresearch/php-fpm:8.3.36 .
+      - name: Build existing application against patched base
+        run: |
+          sed 's#manticoresearch/php-fpm:8.3.10#manticoresearch/php-fpm:8.3.36#' docker/images/Dockerfile-php > /tmp/image-search-test.Dockerfile
+          docker build -f /tmp/image-search-test.Dockerfile -t image-search-fpm-smoke:latest .
+      - name: Validate application initialization and PHP-FPM
+        run: |
+          docker run --rm -i --entrypoint /bin/sh -e APP_ENV=dev image-search-fpm-smoke:latest -se <<'SH'
+          php -r 'exit(PHP_VERSION_ID === 80336 ? 0 : 1);'
+          php -r 'foreach (["curl","gd","mbstring","mysqli","msgpack","yaml","sodium","Zend OPcache"] as $ext) { if (!extension_loaded($ext)) { fwrite(STDERR, "$ext missing"); exit(1); } }'
+          php -r 'exit(setlocale(LC_ALL, "en_US.UTF8") === false ? 1 : 0);'
+          /src/bin/init
+          test -s /src/env/etc/config.php
+          test -s /src/env/etc/php-fpm.conf
+          grep -Fq '$apr1$' /src/env/etc/.htpasswd
+          php-fpm -t -y /src/docker/containers/php/config/php-fpm.conf
+          php-fpm -R -F -y /src/docker/containers/php/config/php-fpm.conf &
+          pid=$!
+          sleep 2
+          kill -0 "$pid"
+          test -S /src/env/run/php-fpm.sock
+          kill "$pid"
+          wait "$pid" || :
+          SH
+
+  publish:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-qemu-action@v3
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: docker/images/Dockerfile-php-fpm-base
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: manticoresearch/php-fpm:8.3.36
