@@ -18,6 +18,23 @@ jobs:
     timeout-minutes: 35
     steps:
       - uses: actions/checkout@v4
+      - name: Verify published PHP-FPM image
+        run: |
+          docker pull manticoresearch/php-fpm:8.3.36
+          docker run --rm --entrypoint /bin/sh manticoresearch/php-fpm:8.3.36 -c 'set -eu; php -v; cat /etc/os-release; command -v dnf || true; command -v apk || true; command -v apt-get || true; command -v composer || true; command -v php-config || true; php -m; ls -la /etc/php /etc/php/conf.d || true; php -r "exit(PHP_VERSION_ID === 80336 ? 0 : 1);"'
+      - name: Build image search against published image
+        run: |
+          sed 's#manticoresearch/php-fpm:8.3.10#manticoresearch/php-fpm:8.3.36#' docker/images/Dockerfile-php > /tmp/image-search-published.Dockerfile
+          docker build --pull -f /tmp/image-search-published.Dockerfile -t image-search-published:latest .
+      - name: Smoke test published image
+        run: |
+          docker run --rm -i --entrypoint /bin/sh -e APP_ENV=dev image-search-published:latest -se <<'SH'
+          php -r 'exit(PHP_VERSION_ID === 80336 ? 0 : 1);'
+          /src/bin/init
+          test -s /src/env/etc/config.php
+          test -s /src/env/etc/php-fpm.conf
+          php-fpm -t -y /src/docker/containers/php/config/php-fpm.conf
+          SH
       - name: Build patched base
         run: docker build -f docker/images/Dockerfile-php-fpm-base -t manticoresearch/php-fpm:8.3.36 .
       - name: Build existing application against patched base
