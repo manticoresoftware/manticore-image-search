@@ -6,7 +6,9 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY docker/containers/embed/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# CPU-only torch: the deploy host has no GPU and the default amd64 wheel pulls
+# several GB of nvidia-* CUDA packages, which exhausts disk and RAM there.
+RUN pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
 
 COPY docker/containers/embed/entrypoint /entrypoint
 
