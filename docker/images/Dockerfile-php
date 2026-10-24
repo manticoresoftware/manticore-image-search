@@ -1,5 +1,12 @@
-FROM manticoresearch/php-fpm:8.3.10
+FROM manticoresearch/php-fpm:8.3.36
 LABEL maintainer="Manticore Software Ltd. <contact@manticoresearch.com>"
+
+# App-level extras (moved here from the base image). sodium is compiled into
+# the base image since 8.3.36, so only msgpack and yaml are built here.
+RUN php-ext add msgpack yaml && \
+  apk add --update curl bash openssl imagemagick && \
+  rm -fr /var/cache/apk/* && \
+  rm -fr /tmp/*
 
 COPY . /src
 RUN ln -fs /src/docker/containers/php/config/php.ini /etc/php/php.ini && \
